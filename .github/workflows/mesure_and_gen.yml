@@ -1,7 +1,7 @@
 name: MesureAndGenerate
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
   schedule:
     # every ~30min (every 30min starting min13, every hour, ...)
     - cron:  '13/30 * * * *'
