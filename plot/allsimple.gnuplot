@@ -14,6 +14,7 @@ set xtics rotate by 45 right
 
 set yrange [0:1]
 set ylabel 'ratio'
+set ytics 0.05
 
 f_trendline(x) = a*x + b
 fit f_trendline(x) "plot.csv" u 0:5 via a,b

@@ -2,9 +2,9 @@ name: MesureAndGenerate
 
 on:
   workflow_dispatch
-  #schedule:
-  #  # every ~30min (every 30min starting min13, every hour, ...)
-  #  - cron:  '13/30 * * * *'
+  schedule:
+    # every ~30min (every 30min starting min13, every hour, ...)
+    - cron:  '13/30 * * * *'
 
 #permissions:
 #  contents: write
@@ -44,7 +44,7 @@ jobs:
         gnuplot -e "set terminal pngcairo size 1600,900; set output \"allsimple.png\"" allsimple.gnuplot
         mv allsimple.png ../docs/img/
 
-    - name: checkin
+    - name: commit and push update
       run: |
         git config --global user.name 'Green Sky'
         git config --global user.email 'Green-Sky@users.noreply.github.com'
