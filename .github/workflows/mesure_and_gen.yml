@@ -30,7 +30,7 @@ jobs:
       run: cmake --build ${{github.workspace}}/tool_src/build --config Release -j 4 -t dht_tool
 
     - name: run
-      run: tool_src/build/bin/dht_tool
+      run: tool_src/build/bin/dht_tool ${{github.workspace}}/docs/data
 
     #- name: Determine tag name
     #  id: tag

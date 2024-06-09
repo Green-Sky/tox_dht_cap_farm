@@ -1,8 +1,11 @@
 #include <fstream>
 #include <chrono>
+#include <ios>
 #include <iostream>
-
 #include <thread>
+#include <filesystem>
+#include <ctime>
+
 #include <tox/tox.h>
 #include <tox/tox_private.h>
 
@@ -17,6 +20,23 @@
 // grabs the dht numbers and appends them to csv
 
 int main(int argc, char** argv) {
+	if (argc != 2) {
+		std::cerr << "Usage: " << argv[0] << " <path-to-csvs>\n";
+		return 1;
+	}
+
+	if (std::filesystem::exists(argv[1])) {
+		if (!std::filesystem::is_directory(argv[1])) {
+			return 1;
+		}
+	} else {
+		std::filesystem::create_directories(argv[1]);
+	}
+
+	if (!std::filesystem::is_directory(argv[1])) {
+		return 1;
+	}
+
 	auto* options = tox_options_new(nullptr);
 	if (options == nullptr) {
 		return 1;
@@ -81,6 +101,29 @@ int main(int argc, char** argv) {
 	std::cout << "ratio: " << float(num_cap)/num << "\n";
 
 	tox_kill(tox);
+
+	// open appending date csv in data dir (potentially create)
+	std::filesystem::path data_file_path {argv[1]};
+	{ // date to filename
+		std::time_t newt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		char time_string[std::size("yyyy-mm-dd")];
+		std::strftime(std::data(time_string), std::size(time_string), "%F", std::gmtime(&newt));
+		data_file_path /= time_string + std::string(".csv");
+	}
+	std::ofstream data_file(data_file_path, std::ios_base::out | std::ios_base::binary | std::ios_base::app);
+	if (!data_file.is_open()) {
+		std::cerr << "failed opening " << data_file_path.generic_u8string() << "\n";
+		return 1;
+	}
+
+	// append line
+	data_file
+		<< std::chrono::duration_cast<std::chrono::seconds>(clock::now().time_since_epoch()).count() << ","
+		<< TOXCORE_COMMIT_HASH << ","
+		<< num << ","
+		<< num_cap << ","
+		<< float(num_cap)/num  << "\n"
+	;
 
 	return 0;
 }

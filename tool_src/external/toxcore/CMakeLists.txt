@@ -28,7 +28,7 @@ if (NOT TARGET toxcore)
 		target_link_libraries(toxcore INTERFACE toxcore_shared)
 	endif()
 
-	target_compile_definitions(toxcore INTERFACE TOXCORE_COMMIT_HASH=${TOXCORE_COMMIT_HASH})
+	target_compile_definitions(toxcore INTERFACE TOXCORE_COMMIT_HASH="${TOXCORE_COMMIT_HASH}")
 
 	# HACK: "install" api headers into binary dir
 	configure_file(
