@@ -21,7 +21,7 @@ jobs:
         submodules: recursive
 
     - name: Install Dependencies
-      run: sudo apt update && sudo apt -y install libsodium-dev cmake gnuplot
+      run: sudo apt update && sudo apt -y install git libsodium-dev cmake gnuplot
 
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/tool_src/build -DCMAKE_BUILD_TYPE=Release -S tool_src
@@ -30,7 +30,21 @@ jobs:
       run: cmake --build ${{github.workspace}}/tool_src/build --config Release -j 4 -t dht_tool
 
     - name: run
-      run: tool_src/build/bin/dht_tool ${{github.workspace}}/docs/data
+      run: ${{github.workspace}}/tool_src/build/bin/dht_tool ${{github.workspace}}/docs/data
+
+    - name: plot_all
+      run: |
+        cd ${{github.workspace}}/plot
+        cat ../docs/data/* > plot.csv
+        gnuplot -e "set terminal pngcairo size 1600,900; set output \"allsimple.png\"" allsimple.gnuplot
+        mv allsimple.png ../docs/img/
+
+    - name: checkin
+      run: |
+        cd ${{github.workspace}}
+        git add docs/data/
+        git add docs/img/
+        git status
 
     #- name: Determine tag name
     #  id: tag
@@ -44,18 +58,6 @@ jobs:
     #      SAFE_NAME=$(echo "${{ env.BRANCH_NAME }}" | tr '/' '-')
     #      echo "name=dev-${SAFE_NAME}-${SHORT_HASH}" >> $GITHUB_OUTPUT
     #    fi
-
-    #- name: Compress artifacts
-    #  shell: bash
-    #  run: |
-    #    tar -czvf ${{ github.event.repository.name }}-${{ steps.tag.outputs.name }}-${{ runner.os }}-ubuntu20.04-x86_64.tar.gz -C ${{github.workspace}}/build/bin/ .
-
-    #- uses: actions/upload-artifact@v4
-    #  with:
-    #    name: ${{ github.event.repository.name }}-${{ steps.tag.outputs.name }}-${{ runner.os }}-ubuntu20.04-x86_64
-    #    # TODO: do propper packing
-    #    path: |
-    #      ${{github.workspace}}/${{ github.event.repository.name }}-${{ steps.tag.outputs.name }}-${{ runner.os }}-ubuntu20.04-x86_64.tar.gz
 
   generate:
     if: ${{github.ref == 'refs/heads/master'}}
