@@ -23,11 +23,14 @@ jobs:
     - name: Install Dependencies
       run: sudo apt update && sudo apt -y install libsodium-dev cmake gnuplot
 
-    #- name: Configure CMake
-    #  run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/tool_src/build -DCMAKE_BUILD_TYPE=Release -S tool_src
 
-    #- name: Build
-    #  run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4 -t tomato
+    - name: Build
+      run: cmake --build ${{github.workspace}}/tool_src/build --config Release -j 4 -t dht_tool
+
+    - name: run
+      run: tool_src/build/bin/dht_tool
 
     #- name: Determine tag name
     #  id: tag
