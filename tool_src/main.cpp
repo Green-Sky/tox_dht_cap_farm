@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
 
 	// append line
 	data_file
-		<< std::chrono::duration_cast<std::chrono::seconds>(clock::now().time_since_epoch()).count() << ","
+		<< std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count() << ","
 		<< TOXCORE_COMMIT_HASH << ","
 		<< num << ","
 		<< num_cap << ","
