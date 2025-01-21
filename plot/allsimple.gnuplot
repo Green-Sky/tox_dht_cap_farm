@@ -6,6 +6,8 @@ set datafile separator ','
 set grid
 
 set xdata time # tells gnuplot the x axis is time data
+set timefmt "%s"
+set format x "%d.%m.%Y"
 set xlabel 'time'
 set xtics rotate by 45 right
 
@@ -19,6 +21,6 @@ set ytics 0.05
 f_trendline(x) = a*x + b
 fit f_trendline(x) "plot.csv" u 0:5 via a,b
 
-plot "plot.csv" u 0:5:xtic(strftime("%d.%m.%Y %H:%M",column(1))) w p ls -1 pt 7 title "",\
+plot "plot.csv" using 1:5 w p ls -1 pt 7 title "",\
 	f_trendline(x) w l lw 5 lc "forest-green" title "trend"
 
