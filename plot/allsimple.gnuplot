@@ -18,8 +18,9 @@ set yrange [0:1]
 set ylabel 'ratio'
 set ytics 0.05
 
-f_trendline(x) = a*x + b
-fit f_trendline(x) "plot.csv" u 1:5 via a,b
+# TODO: fix trend line
+#f_trendline(x) = a*x + b
+#fit f_trendline(x) "plot.csv" u 1:5 via a,b
 
 plot "plot.csv" using 1:5 w p ls -1 pt 7 title "",\
 	f_trendline(x) w l lw 5 lc "forest-green" title "trend"
